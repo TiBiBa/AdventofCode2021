@@ -1,8 +1,7 @@
 class Valve:
 
-    neighbours = {}
-
-    def __init__(self):
+    def __init__(self, height):
+        self.height = height
         self.neighbours['up']: None
         self.neighbours['right']: None
         self.neighbours['down']: None
@@ -11,5 +10,11 @@ class Valve:
     def set_neighbours(self, neighbours):
         pass
 
+    def get_neighbours(self):
+        return self.neighbours
+
     def is_lowest_point(self):
         return False
+
+    def get_risk_level(self):
+        return self.height + 1
