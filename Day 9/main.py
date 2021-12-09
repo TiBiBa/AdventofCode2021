@@ -7,6 +7,7 @@ class Valve:
 
     def __init__(self, height):
         self.height = int(height)
+        self.visited = False
 
     def set_up_neighbour(self, up):
         self.up = int(up)
@@ -19,6 +20,12 @@ class Valve:
 
     def set_left_neighbour(self, left):
         self.left = int(left)
+
+    def set_visited(self):
+        self.visited = True
+
+    def get_visited(self):
+        return self.visited
 
     def get_neighbours(self):
         return self.up, self.right, self.down, self.left
@@ -33,7 +40,8 @@ class Valve:
     def get_risk_level(self):
         return self.height + 1
 
-def step1():
+
+def createValves():
     file = open("input.txt", "r")
     temp = file.read().splitlines()
     heights = []
@@ -56,6 +64,10 @@ def step1():
                 valve.set_down_neighbour(heights[y+1][x])
             valveRow.append(valve)
         valves2dArray.append(valveRow)
+
+
+def step1():
+    valves2dArray = createValves()
 
     risk_counter = 0
     for y in range(0, len(valves2dArray)):
@@ -80,14 +92,17 @@ def walkDirection(heights, current_y, current_x, direction, basin_size):
     else:
         return basin_size
 
-def step2():
-    file = open("input.txt", "r")
-    temp = file.read().splitlines()
-    heights = []
-    for height in temp:
-        heights.append(list(height))
+#How should the recursive function work:
+#   -   We call the function on an (x, y) location
+#   -   For each of the neighbours that has not been visited AND is < 9 -> visit and add +1 to basin size
+#   -   If not, return
+#   -   TODO: How does it work again with returning found values in recursive functions?
 
-    for y in range(0, len(heights)):
-        for x in range(0, len(heights[y])):
-            if heights[y][x] < 9:
-                print(walk(heights, y, x, 0))
+def step2():
+    valves2dArray = createValves()
+    for y in range(0, len(valves2dArray)):
+        for x in range(0, len(valves2dArray[y])):
+            pass
+            #For each value:
+            #Recursively walk through the field
+            #Return the size of the cluster until we find a 9
