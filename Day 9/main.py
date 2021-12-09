@@ -60,11 +60,25 @@ def step1():
     risk_counter = 0
     for y in range(0, len(valves2dArray)):
         for x in range(0, len(valves2dArray[y])):
-             print(valves2dArray[y][x].get_height())
-             print(valves2dArray[y][x].get_neighbours())
              if valves2dArray[y][x].is_lowest_point():
                  risk_counter += valves2dArray[y][x].get_risk_level()
     print(risk_counter)
+
+
+def walk(heights, current_y, current_x, basin_size):
+    for direction in ['up', 'right', 'down', 'left']:
+        basin_size += walkDirection(heights, current_y, current_x, direction, basin_size)
+    return basin_size
+
+
+def walkDirection(heights, current_y, current_x, direction, basin_size):
+    if direction == 'left' and current_x > 0 and heights[current_y][current_x-1] < 9:
+        return walk(heights, current_y, current_x-1, basin_size+1)
+    elif direction == 'up' and current_y > 0 and heights[current_y-1][current_x] < 9:
+        return walk(heights, current_y+1, current_x, basin_size+1)
+
+    else:
+        return basin_size
 
 def step2():
     file = open("input.txt", "r")
@@ -72,3 +86,8 @@ def step2():
     heights = []
     for height in temp:
         heights.append(list(height))
+
+    for y in range(0, len(heights)):
+        for x in range(0, len(heights[y])):
+            if heights[y][x] < 9:
+                print(walk(heights, y, x, 0))
