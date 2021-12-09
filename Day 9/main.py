@@ -109,6 +109,7 @@ def walk(valves, current_y, current_x, direction, current_size):
 
     return current_size
 
+
 def step2():
     valves2dArray = createValves()
     bin_sizes = []
