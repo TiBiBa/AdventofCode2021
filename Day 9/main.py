@@ -100,7 +100,7 @@ def walk(valves, current_y, current_x, direction, current_size):
     elif direction == 'down':
         if current_y < (len(valves) - 1) and valves[current_y+1][current_x].get_height() < 9 and not valves[current_y+1][current_x].get_visited():
             valves[current_y+1][current_x].set_visited()
-            return walk(valves, (current_y+1), current_x, None, (current_size + 1))
+            return walk(valves, (current_y+1), current_x, None, (current_size+1))
         else:
             return current_size
     else:
