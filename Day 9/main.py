@@ -64,6 +64,7 @@ def createValves():
                 valve.set_down_neighbour(heights[y+1][x])
             valveRow.append(valve)
         valves2dArray.append(valveRow)
+    return valves2dArray
 
 
 def step1():
@@ -77,32 +78,49 @@ def step1():
     print(risk_counter)
 
 
-def walk(heights, current_y, current_x, basin_size):
-    for direction in ['up', 'right', 'down', 'left']:
-        basin_size += walkDirection(heights, current_y, current_x, direction, basin_size)
-    return basin_size
-
-
-def walkDirection(heights, current_y, current_x, direction, basin_size):
-    if direction == 'left' and current_x > 0 and heights[current_y][current_x-1] < 9:
-        return walk(heights, current_y, current_x-1, basin_size+1)
-    elif direction == 'up' and current_y > 0 and heights[current_y-1][current_x] < 9:
-        return walk(heights, current_y+1, current_x, basin_size+1)
-
+def walk(valves, current_y, current_x, direction, current_size):
+    if direction == 'up':
+        if current_y > 0 and valves[current_y-1][current_x].get_height() < 9 and not valves[current_y-1][current_x].get_visited():
+            valves[current_y - 1][current_x].set_visited()
+            return walk(valves, (current_y-1), current_x, None, (current_size+1))
+        else:
+            return current_size
+    elif direction == 'right':
+        if current_x < (len(valves[current_y])-1) and valves[current_y][current_x+1].get_height() < 9 and not valves[current_y][current_x+1].get_visited():
+            valves[current_y][current_x + 1].set_visited()
+            return walk(valves, current_y, (current_x+1), None, (current_size+1))
+        else:
+            return current_size
+    elif direction == 'left':
+        if current_x > 0 and valves[current_y][current_x-1].get_height() < 9 and not valves[current_y][current_x-1].get_visited():
+            valves[current_y][current_x - 1].set_visited()
+            return walk(valves, current_y, (current_x-1), None, (current_size+1))
+        else:
+            return current_size
+    elif direction == 'down':
+        if current_y < (len(valves) - 1) and valves[current_y+1][current_x].get_height() < 9 and not valves[current_y+1][current_x].get_visited():
+            valves[current_y+1][current_x].set_visited()
+            return walk(valves, (current_y+1), current_x, None, (current_size + 1))
+        else:
+            return current_size
     else:
-        return basin_size
+        for direction in ['up', 'right', 'down', 'left']:
+            current_size = walk(valves, current_y, current_x, direction, current_size)
 
-#How should the recursive function work:
-#   -   We call the function on an (x, y) location
-#   -   For each of the neighbours that has not been visited AND is < 9 -> visit and add +1 to basin size
-#   -   If not, return
-#   -   TODO: How does it work again with returning found values in recursive functions?
+    return current_size
 
 def step2():
     valves2dArray = createValves()
+    bin_sizes = []
+
     for y in range(0, len(valves2dArray)):
         for x in range(0, len(valves2dArray[y])):
-            pass
-            #For each value:
-            #Recursively walk through the field
-            #Return the size of the cluster until we find a 9
+            bin_sizes.append(walk(valves2dArray, y, x, None, 0))
+    bin_sizes.sort(reverse=True)
+    biggest_bins = bin_sizes[:3]
+    counter = 1
+    for bin in biggest_bins:
+        counter *= bin
+    print(counter)
+
+step2()
