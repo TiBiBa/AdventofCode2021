@@ -66,4 +66,9 @@ def step1():
                  risk_counter += valves2dArray[y][x].get_risk_level()
     print(risk_counter)
 
-step1()
+def step2():
+    file = open("input.txt", "r")
+    temp = file.read().splitlines()
+    heights = []
+    for height in temp:
+        heights.append(list(height))
