@@ -25,7 +25,7 @@ def walk_unique(nodes, current_node, route, routes):
             walk_unique(nodes, neighbour, route, routes)
 
 
-def step1():
+def create_nodes():
     nodes = {}
 
     file = open("input.txt", "r")
@@ -37,7 +37,11 @@ def step1():
                 nodes[node] = Node(node)
         nodes[edge_nodes[0]].add_neighbour(edge_nodes[1])
         nodes[edge_nodes[1]].add_neighbour(edge_nodes[0])
+    return nodes
 
+
+def step1():
+    nodes = create_nodes()
     start_route = ['start']
     routes = []
     for neighbour in nodes['start'].get_neighbours():
@@ -65,24 +69,11 @@ def walk_twice(nodes, current_node, route, routes):
 
 
 def step2():
-    nodes = {}
-
-    file = open("input.txt", "r")
-    edges = file.read().splitlines()
-    for edge in edges:
-        edge_nodes = edge.split("-")
-        for node in edge_nodes:
-            if node not in nodes:
-                nodes[node] = Node(node)
-        nodes[edge_nodes[0]].add_neighbour(edge_nodes[1])
-        nodes[edge_nodes[1]].add_neighbour(edge_nodes[0])
-
+    nodes = create_nodes()
     start_route = ['start']
     routes = []
     for neighbour in nodes['start'].get_neighbours():
         walk_twice(nodes, neighbour, start_route, routes)
-
     print(len(routes))
-
 
 step2()
