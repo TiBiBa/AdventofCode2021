@@ -16,23 +16,32 @@ class Octopus:
 
     def flash(self):
         self.flashed = True
+
+    def reset(self):
+        self.flashed = False
         self.energy = 0
 
 
 def get_neighbours(y, x):
-    pass
+    neighbours = []
+    if x > 0:
+        neighbours.append((y, x-1))
+        if y > 0:
+            neighbours.append((y-1, x-1))
+    if x < 9:
+        neighbours.append((y, x+1))
+        if y > 0:
+            neighbours.append((y-1, x+1))
+    if y > 0:
+        neighbours.append((y-1, x))
+    if y < 9:
+        neighbours.append((y+1, x))
+        if x > 0:
+            neighbours.append((y+1, x-1))
+        if x < 9:
+            neighbours.append((y+1, x+1))
+    return neighbours
 
-def step(grid, flashes):
-    for y in range(0, len(grid)):
-        for x in range(0, len(grid[y])):
-            if grid[y][x].get_energy() > 9 and not grid[y][x].get_flash():
-                grid[y][x].flash()
-                for neighbours in get_neighbours(y, x):
-                    flashes += step(grid, flashes+1)
-            else:
-                return flashes
-
-    return grid, flashes
 
 def step1():
     file = open("input.txt", "r")
@@ -48,9 +57,65 @@ def step1():
 
     flashes = 0
     for _ in range(100):
+        unflashed = True
         for y in range(0, len(grid)):
             for x in range(0, len(grid[y])):
                 grid[y][x].increase_energy()
-        grid, flashes = step(grid, flashes)
+        while unflashed:
+            unflashed = False
+            for y in range(0, len(grid)):
+                for x in range(0, len(grid[y])):
+                    if grid[y][x].get_energy() > 9 and not grid[y][x].get_flash():
+                        unflashed = True
+                        grid[y][x].flash()
+                        flashes += 1
+                        for neighbour in get_neighbours(y, x):
+                            grid[neighbour[0]][neighbour[1]].increase_energy()
+        for y in range(0, len(grid)):
+            for x in range(0, len(grid[y])):
+                if grid[y][x].get_flash():
+                    grid[y][x].reset()
+    print(flashes)
 
-step1()
+def step2():
+    file = open("input.txt", "r")
+
+    grid = []
+    octopuses = file.read().splitlines()
+    for y in range(0, len(octopuses)):
+        row = []
+        for x in range(0, len(octopuses[y])):
+            octopus = Octopus(octopuses[y][x])
+            row.append(octopus)
+        grid.append(row)
+
+    all_zero = False
+    steps = 0
+    while not all_zero:
+        steps += 1
+        unflashed = True
+        for y in range(0, len(grid)):
+            for x in range(0, len(grid[y])):
+                grid[y][x].increase_energy()
+        while unflashed:
+            unflashed = False
+            for y in range(0, len(grid)):
+                for x in range(0, len(grid[y])):
+                    if grid[y][x].get_energy() > 9 and not grid[y][x].get_flash():
+                        unflashed = True
+                        grid[y][x].flash()
+                        for neighbour in get_neighbours(y, x):
+                            grid[neighbour[0]][neighbour[1]].increase_energy()
+        for y in range(0, len(grid)):
+            for x in range(0, len(grid[y])):
+                if grid[y][x].get_flash():
+                    grid[y][x].reset()
+
+        all_zero = True
+        for y in range(0, len(grid)):
+            for x in range(0, len(grid[y])):
+                if grid[y][x].get_energy() > 0:
+                    all_zero = False
+    print(steps)
+
+step2()
