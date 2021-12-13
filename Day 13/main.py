@@ -66,7 +66,10 @@ def step2():
         axis = fold_instruction.split(" ")[2].split("=")[0]
         instruction = int(fold_instruction.split(" ")[2].split("=")[1])
         grid = fold(grid, axis, instruction)
+
+    grid[grid == 0] = 'nan'
+    np.set_printoptions(nanstr=".")
     print(grid)
 
 
-step1()
+step2()
