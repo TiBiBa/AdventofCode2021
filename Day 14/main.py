@@ -34,7 +34,12 @@ def step1():
     for char in set(template):
         print(char + " has " + str(template.count(char)) + " occurrences")
 
+
 def step2():
+    #Idea: Restructure to dict of count
+    #Each pair results in two new pairs, add these as values
+    #Then, for each pair repeat the process 40 times
+    #Count char of each key in the dict and sum
     pass
 
 step1()
